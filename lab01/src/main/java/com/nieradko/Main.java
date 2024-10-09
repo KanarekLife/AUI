@@ -1,8 +1,8 @@
 package com.nieradko;
 
-import com.nieradko.dtos.CharacterDto;
-import com.nieradko.entities.Character;
-import com.nieradko.entities.Profession;
+import com.nieradko.dtos.GameDto;
+import com.nieradko.entities.Game;
+import com.nieradko.entities.GameGenre;
 
 import java.io.*;
 import java.util.Comparator;
@@ -14,105 +14,106 @@ import java.util.stream.Stream;
 public class Main {
     public static void main(String[] args) {
         System.out.println("Task 2\n");
-        var professionsByName = Stream.of(
-                Profession.builder()
-                        .name("Spellcaster")
-                        .baseArmor(10)
+        var gameGenresByName = Stream.of(
+                GameGenre.builder()
+                        .name("FPS")
+                        .supportsMultiplayer(true)
                         .build(),
-                Profession.builder()
-                        .name("Orc")
-                        .baseArmor(250)
+                GameGenre.builder()
+                        .name("Racing")
+                        .supportsMultiplayer(true)
                         .build(),
-                Profession.builder()
-                        .name("Swordmaster")
-                        .baseArmor(125)
+                GameGenre.builder()
+                        .name("RPG")
+                        .supportsMultiplayer(false)
                         .build()
-        ).collect(Collectors.toMap(Profession::getName, x -> x));
-        var allProfessions = professionsByName.values().stream().toList();
+        ).collect(Collectors.toMap(GameGenre::getName, x -> x));
+        var allGameGenres = gameGenresByName.values().stream().toList();
 
-        var characters = List.of(
-                Character.builder()
-                        .name("John")
-                        .level(5)
-                        .profession(professionsByName.get("Swordmaster"))
+        var games = List.of(
+                Game.builder()
+                        .name("Medal of Honour")
+                        .minimalPlayerAge(21)
+                        .genre(gameGenresByName.get("FPS"))
                         .build(),
-                Character.builder()
-                        .name("Jack")
-                        .level(15)
-                        .profession(professionsByName.get("Orc"))
+                Game.builder()
+                        .name("Gran Turismo")
+                        .minimalPlayerAge(15)
+                        .genre(gameGenresByName.get("Racing"))
                         .build(),
-                Character.builder()
-                        .name("Johnson")
-                        .level(20)
-                        .profession(professionsByName.get("Orc"))
+                Game.builder()
+                        .name("Disco Elysium")
+                        .minimalPlayerAge(18)
+                        .genre(gameGenresByName.get("RPG"))
                         .build(),
-                Character.builder()
-                        .name("Pikachu")
-                        .level(25)
-                        .profession(professionsByName.get("Spellcaster"))
+                Game.builder()
+                        .name("Pokemon")
+                        .minimalPlayerAge(7)
+                        .genre(gameGenresByName.get("RPG"))
                         .build()
         );
 
-        allProfessions.forEach(profession -> {
-            System.out.printf("%s:\n", profession.getName());
-            profession.getCharacters().forEach(character -> System.out.printf("\t%s\n", character.toString()));
+        allGameGenres.forEach(gameGenre -> {
+            System.out.printf("%s:\n", gameGenre.getName());
+            gameGenre.getGames().forEach(game -> System.out.printf("\t%s\n", game.toString()));
         });
 
-        System.out.println("Task 3\n");
-        var allCharacters = allProfessions.stream()
-                .flatMap(x -> x.getCharacters().stream())
+        System.out.println("\nTask 3\n");
+        var allGames = allGameGenres.stream()
+                .flatMap(x -> x.getGames().stream())
                 .collect(Collectors.toSet());
-        allCharacters.forEach(System.out::println);
+        allGames.forEach(System.out::println);
 
-        System.out.println("Task 4\n");
-        allCharacters.stream()
-                .filter(x -> x.getLevel() > 15)
-                .sorted(Comparator.comparing(x -> x.getProfession().getName()))
+        System.out.println("\nTask 4\n");
+        allGames.stream()
+                .filter(x -> x.getMinimalPlayerAge() > 15)
+                .sorted(Comparator.comparing(x -> x.getGenre().getName()))
                 .forEach(System.out::println);
 
-        System.out.println("Task 5\n");
-        var allCharacterDtos = allCharacters.stream()
-                .map(x -> CharacterDto.builder()
+        System.out.println("\nTask 5\n");
+        var allGameDtos = allGames.stream()
+                .map(x -> GameDto.builder()
                         .name(x.getName())
-                        .level(x.getLevel())
-                        .profession(x.getProfession().getName())
+                        .minimalPlayerAge(x.getMinimalPlayerAge())
+                        .genre(x.getGenre().getName())
+                        .supportsMultiplayer(x.getGenre().isSupportsMultiplayer())
                         .build()
                 )
                 .sorted()
                 .toList();
-        allCharacterDtos.forEach(System.out::println);
+        allGameDtos.forEach(System.out::println);
 
-        System.out.println("Task 6\n");
+        System.out.println("\nTask 6\n");
         // Save to file
         try (
-                var fs = new FileOutputStream("professions.bin");
+                var fs = new FileOutputStream("data.bin");
                 var os = new ObjectOutputStream(fs);
         ) {
-            os.writeObject(allProfessions);
+            os.writeObject(allGameGenres);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         // Read from file
         try (
-                var fs = new FileInputStream("professions.bin");
+                var fs = new FileInputStream("data.bin");
                 var os = new ObjectInputStream(fs);
         ) {
-            ((List<Profession>) os.readObject())
-                    .forEach(profession -> {
-                        System.out.printf("%s:\n", profession.getName());
-                        profession.getCharacters().forEach(character -> System.out.printf("\t%s\n", character.toString()));
+            ((List<GameGenre>) os.readObject())
+                    .forEach(gameGenre -> {
+                        System.out.printf("%s:\n", gameGenre.getName());
+                        gameGenre.getGames().forEach(game -> System.out.printf("\t%s\n", game.toString()));
                     });
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 
-        System.out.println("Task 7\n");
+        System.out.println("\nTask 7\n");
         var pool = new ForkJoinPool(4);
-        pool.submit(() -> allCharacters.stream().toList().parallelStream().forEach(character -> {
+        pool.submit(() -> allGames.stream().toList().parallelStream().forEach(game -> {
             try {
-                Thread.sleep(character.getLevel() * 50L);
-                System.out.println(character);
+                Thread.sleep(game.getMinimalPlayerAge() * 100L);
+                System.out.println(game);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
