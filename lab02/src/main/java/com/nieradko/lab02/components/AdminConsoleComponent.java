@@ -17,7 +17,6 @@ public class AdminConsoleComponent implements CommandLineRunner {
     private final GamesService _gamesService;
     private final GameGenresService _gameGenresService;
     @Autowired
-
     public AdminConsoleComponent(GamesService gamesService, GameGenresService gameGenresService) {
         _gamesService = gamesService;
         _gameGenresService = gameGenresService;

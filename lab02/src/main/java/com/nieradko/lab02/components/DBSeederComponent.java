@@ -42,8 +42,10 @@ public class DBSeederComponent {
         )
                 .map(GameGenre.GameGenreBuilder::build)
                 .collect(Collectors.toMap(GameGenre::getName, x -> x));
+
         var genres = genresByName.values();
-        var games = Stream.of(
+
+        Stream.of(
                 Game.inMemoryBuilder()
                         .id(UUID.fromString("77a44f1d-53e9-420f-ab6f-e53978a0e9e2"))
                         .name("Medal of Honour")
@@ -64,8 +66,10 @@ public class DBSeederComponent {
                         .name("Pokemon")
                         .minimalPlayerAge(7)
                         .genre(genresByName.get("RPG"))
-        ).map(Game.GameBuilder::build).collect(Collectors.toSet());
+        ).forEach(Game.GameBuilder::build);
 
         _repository.saveAllAndFlush(genres);
+
+        System.out.println("Database seeded");
     }
 }
