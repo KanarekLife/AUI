@@ -1,0 +1,76 @@
+### Get all games
+GET http://localhost:8080/games/
+
+<> 2024-10-26T120054.200.json
+
+### Get Pokemon game details
+GET http://localhost:8080/games/04a6af4b-f070-4755-8626-d182889f72b5/
+Content-Type: application/json
+
+<> 2024-10-26T120058.200.json
+
+### Create a new RPG game
+POST http://localhost:8080/genres/7667b1d9-6377-43f9-8b92-e2eccd041b36/games/
+Content-Type: application/json
+
+{
+  "name": "TestGame",
+  "minimalPlayerAge": 69
+}
+
+<> 2024-10-26T120103.201.json
+
+### Update game
+PUT http://localhost:8080/games/04a6af4b-f070-4755-8626-d182889f72b5/
+Content-Type: application/json
+
+{
+  "name": "Pokemon v2",
+  "minimalPlayerAge": 8
+}
+
+<> 2024-10-26T120109.200.json
+
+### Delete game
+DELETE http://localhost:8080/games/34f4616e-90f0-49ce-87bf-95589aa1874a/
+
+### Get all genres
+GET http://localhost:8080/genres/
+
+<> 2024-10-26T120936.200.json
+<> 2024-10-26T120236.200.json
+<> 2024-10-26T120214.200.json
+<> 2024-10-26T120116.200.json
+
+### Get a genre
+GET http://localhost:8080/genres/7667b1d9-6377-43f9-8b92-e2eccd041b36/
+
+<> 2024-10-26T120123.200.json
+
+### Create a new genre
+POST http://localhost:8080/genres/
+Content-Type: application/json
+
+{
+  "name": "TestGenre",
+  "supportsMultiplayer": false
+}
+
+<> 2024-10-26T120158.201.json
+
+### Update a genre
+PUT http://localhost:8080/genres/8f577562-032f-40d4-a5a2-ce91a9212bde/
+Content-Type: application/json
+
+{
+  "name": "FPS Updated",
+  "supportsMultiplayer": true
+}
+
+<> 2024-10-26T120225.200.json
+
+### Delete a genre
+DELETE http://localhost:8080/genres/8f577562-032f-40d4-a5a2-ce91a9212bde/
+
+<> 2024-10-26T120803.500.json
+
