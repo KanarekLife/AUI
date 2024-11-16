@@ -33,7 +33,7 @@ export class EditGameViewComponent implements OnInit {
               this.message = error.error.message;
             },
           });
-          this.appService.getGenreById(params['genreId']).subscribe({
+          this.appService.getGenreById(params['id']).subscribe({
             next: (category) => {
               this.genre = category;
             },

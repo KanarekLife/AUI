@@ -18,6 +18,9 @@ export class AddGenreViewComponent {
 
     onSubmit(genre: GameGenre): void {
         this.message = '';
+        if (!genre.name) {
+            return;
+        }
         this.service.createGenre(genre).subscribe({
             next: (genre: GameGenre) => {
                 this.router.navigate(['/genres', genre.id]);

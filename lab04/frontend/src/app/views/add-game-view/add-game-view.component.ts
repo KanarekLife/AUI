@@ -37,12 +37,12 @@ export class AddGameViewComponent implements OnInit {
 
     onSubmit(game: Game): void {
         this.message = '';
-        if (!this.genre) {
+        if (!this.genre || !game.name) {
             return;
         }
         this.appService.createGame(this.genre.id, game).subscribe({
             next: (game: Game) => {
-                this.router.navigate(['/genre', this.genre?.id, 'games', game.id]);
+                this.router.navigate(['/genres', this.genre?.id, 'games', game.id]);
             },
             error: (error) => {
                 this.message = error.error.message;

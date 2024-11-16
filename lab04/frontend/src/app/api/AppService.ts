@@ -37,7 +37,7 @@ export class AppService {
     }
 
     getGamesByGenreId(genreId: string): Observable<Game[]> {
-        return this.httpClient.get<Game[]>(`/api/${genreId}/games/`);
+        return this.httpClient.get<Game[]>(`/api/genres/${genreId}/games/`);
     }
 
     createGame(genreId: string, game: Game): Observable<Game> {

@@ -1,19 +1,16 @@
 @if (genre) {
     <article>
+        <a [routerLink]="['/genres']">Back to Genres</a>
         <header>
-            <h1>{{ genre.name }}</h1>
+            <h1 [title]="genre.id">{{ genre.name }} (number of elements: {{ games?.length ?? 0 }}) (<a [routerLink]="['/genres', genre.id, 'edit']">Edit</a>)</h1>
             <p>Does Support Multiplayer: {{ genre.supportsMultiplayer }}</p>
         </header>
-        <section>
-            <a [routerLink]="['/genres']">Back to Genres</a>
-            <a [routerLink]="['/genres', genre.id, 'edit']">Edit</a>
-        </section>
     </article>
-    <br />
+    <a [routerLink]="['/genres', genre.id, 'games', 'add']">Add new game</a>
     <ul>
         @for (game of games; track game.id) {
             <li>
-                <a [routerLink]="['/games', game.id]">{{ game.name }}</a>
+                <a [routerLink]="['/genres', genre.id, 'games', game.id]">{{ game.name }}</a> (<a (click)="deleteGame(game.id)">Delete</a>)
             </li>
         }
     </ul>

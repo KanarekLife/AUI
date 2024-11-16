@@ -16,8 +16,8 @@ export class GameFormComponent {
         minimalPlayerAge: 0,
         genreId: ''
     }
-    @Input() message: string = '';
     @Output() submit = new EventEmitter<Game>();
+    @Input() message: string = '';
 
     onSubmit(): void {
         if (this.game) {

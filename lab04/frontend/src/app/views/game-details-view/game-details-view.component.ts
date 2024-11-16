@@ -31,7 +31,7 @@ export class GameDetailsViewComponent implements OnInit {
                     this.message = error.error.message;
                 },
             });
-            this.appService.getGenreById(params['genreId']).subscribe({
+            this.appService.getGenreById(params['id']).subscribe({
                 next: (genre) => {
                     this.genre = genre;
                 },

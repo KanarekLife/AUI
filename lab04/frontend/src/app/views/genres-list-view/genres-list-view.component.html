@@ -1,12 +1,14 @@
+<h1>List of GameGenres (number of elements: {{ genres?.length ?? 0 }})</h1>
+<a [routerLink]="['/genres', 'add']">Add new genre</a>
+
+<br />
+
 <ul>
     @if (genres) {
         @for (genre of genres; track genre.id) {
             <li>
-                <a [routerLink]="['/genres', genre.id]">{{ genre.name }}</a>
-                <a (click)="deleteGenre(genre.id)">Delete</a>
+                <a [routerLink]="['/genres', genre.id]">{{ genre.name }}</a> (<a href="#" (click)="deleteGenre(genre.id)">Delete</a>)
             </li>
         }
     }
 </ul>
-
-<a [routerLink]="['/genres', 'new']">Add new genre</a>

@@ -1,7 +1,7 @@
 <form #form="ngForm" (ngSubmit)="onSubmit()">
     <label for="name">Name <input type="text" id="name" name="name" [(ngModel)]="genre.name" /></label>
     <label for="supportsMultiplayer">Supports Multiplayer <input type="checkbox" id="supportsMultiplayer" name="supportsMultiplayer" [(ngModel)]="genre.supportsMultiplayer" /></label>
-    <button type="submit">Submit</button>
+    <button type="submit" [disabled]="!genre.name">Submit</button>
     @if (message) {
         <p>{{message}}</p>
     }
