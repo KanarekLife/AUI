@@ -1,0 +1,6 @@
+@if (genre) {
+    <app-genre-form [genre]="genre" [message]="message" (submit)="onSubmit()"></app-genre-form>
+}
+@else {
+    <p>{{ message }}</p>
+}

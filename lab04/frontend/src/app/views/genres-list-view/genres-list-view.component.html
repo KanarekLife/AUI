@@ -1,0 +1,12 @@
+<ul>
+    @if (genres) {
+        @for (genre of genres; track genre.id) {
+            <li>
+                <a [routerLink]="['/genres', genre.id]">{{ genre.name }}</a>
+                <a (click)="deleteGenre(genre.id)">Delete</a>
+            </li>
+        }
+    }
+</ul>
+
+<a [routerLink]="['/genres', 'new']">Add new genre</a>

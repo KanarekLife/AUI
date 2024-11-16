@@ -1,0 +1,6 @@
+@if (game && genre) {
+    <app-game-form [game]="game" [message]="message" (submit)="onSubmit()"></app-game-form>
+}
+@else {
+    <p>{{ message }}</p>
+}

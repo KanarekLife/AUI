@@ -1,0 +1,8 @@
+<form #form="ngForm" (ngSubmit)="onSubmit()">
+    <label for="name">Name <input type="text" id="name" name="name" [(ngModel)]="game.name" /></label>
+    <label for="minimalPlayerAge">Minimal Player Age <input type="number" id="minimalPlayerAge" name="minimalPlayerAge" [(ngModel)]="game.minimalPlayerAge" /></label>
+    <button type="submit">Submit</button>
+    @if (message) {
+        <p>{{message}}</p>
+    }
+</form>

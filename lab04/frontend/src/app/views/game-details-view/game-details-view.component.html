@@ -1,0 +1,16 @@
+@if (game && genre) {
+    <article>
+        <header>
+            <h1>{{ game.name }}</h1>
+            <p>Minimal Player Age: {{ game.minimalPlayerAge }}</p>
+        </header>
+        <section>
+            <a [routerLink]="['/games', game.id, 'edit']">Edit</a>
+            <a [routerLink]="['/genres', game.genreId]">Back</a>
+        </section>
+        <p>{{ message }}</p>
+    </article>
+}
+@else {
+    <p>{{ message }}</p>
+}

@@ -1,0 +1,20 @@
+@if (genre) {
+    <article>
+        <header>
+            <h1>{{ genre.name }}</h1>
+            <p>Does Support Multiplayer: {{ genre.supportsMultiplayer }}</p>
+        </header>
+        <section>
+            <a [routerLink]="['/genres']">Back to Genres</a>
+            <a [routerLink]="['/genres', genre.id, 'edit']">Edit</a>
+        </section>
+    </article>
+    <br />
+    <ul>
+        @for (game of games; track game.id) {
+            <li>
+                <a [routerLink]="['/games', game.id]">{{ game.name }}</a>
+            </li>
+        }
+    </ul>
+}

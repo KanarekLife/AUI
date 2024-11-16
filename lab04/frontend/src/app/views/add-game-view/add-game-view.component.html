@@ -1,0 +1,6 @@
+@if (genre) {
+    <app-game-form [message]="message" (submit)="onSubmit($event)"></app-game-form>
+}
+@else {
+    <p>{{message}}</p>
+}
