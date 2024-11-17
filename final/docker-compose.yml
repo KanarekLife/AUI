@@ -1,0 +1,18 @@
+services:
+    frontend:
+        build: ./frontend
+        ports:
+            - 8080:80
+        environment:
+            - API_URL=http://gateway:8080/
+    gateway:
+        build: ./gateway
+        environment:
+            - GATEWAY_GAMESAPI=http://gamesapi:8081
+            - GATEWAY_GAMEGENRESAPI=http://gamegenresapi:8082
+    gamesapi:
+        build: ./games_api
+    gamegenresapi:
+        build: ./gamegenres_api
+        environment:
+            - GATEWAY_GAMESAPI=http://gamesapi:8081
