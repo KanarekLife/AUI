@@ -4,15 +4,55 @@ services:
         ports:
             - 8080:80
         environment:
-            - API_URL=http://gateway:8080/
+            - API_URL=http://gateway:8080
+        depends_on:
+            - gateway
     gateway:
         build: ./gateway
         environment:
             - GATEWAY_GAMESAPI=http://gamesapi:8081
             - GATEWAY_GAMEGENRESAPI=http://gamegenresapi:8082
+        depends_on:
+            - gamesapi
+            - gamegenresapi
     gamesapi:
         build: ./games_api
+        environment:
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://gamesapi-db:5432/${GAMESAPI_POSTGRES_DB}
+            - SPRING_DATASOURCE_USERNAME=${GAMESAPI_POSTGRES_USER}
+            - SPRING_DATASOURCE_PASSWORD=${GAMESAPI_POSTGRES_PASSWORD}
+            - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
+            - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+        depends_on:
+            - gamesapi-db
+    gamesapi-db:
+        image: postgres:17-alpine
+        environment:
+            - POSTGRES_USER=${GAMESAPI_POSTGRES_USER}
+            - POSTGRES_PASSWORD=${GAMESAPI_POSTGRES_PASSWORD}
+            - POSTGRES_DB=${GAMESAPI_POSTGRES_DB}
+        volumes:
+          - gamesapi-db-data:/var/lib/postgresql/data
     gamegenresapi:
         build: ./gamegenres_api
         environment:
             - GATEWAY_GAMESAPI=http://gamesapi:8081
+            - SPRING_DATASOURCE_URL=jdbc:postgresql://gamegenresapi-db:5432/${GAMEGENRESAPI_POSTGRES_DB}
+            - SPRING_DATASOURCE_USERNAME=${GAMEGENRESAPI_POSTGRES_USER}
+            - SPRING_DATASOURCE_PASSWORD=${GAMEGENRESAPI_POSTGRES_PASSWORD}
+            - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
+            - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+        depends_on:
+            - gamegenresapi-db
+    gamegenresapi-db:
+        image: postgres:17-alpine
+        environment:
+            - POSTGRES_USER=${GAMEGENRESAPI_POSTGRES_USER}
+            - POSTGRES_PASSWORD=${GAMEGENRESAPI_POSTGRES_PASSWORD}
+            - POSTGRES_DB=${GAMEGENRESAPI_POSTGRES_DB}
+        volumes:
+          - gamegenresapi-db-data:/var/lib/postgresql/data
+
+volumes:
+    gamesapi-db-data:
+    gamegenresapi-db-data:
