@@ -3,6 +3,7 @@ import { AppService } from '../../api/AppService';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameGenre } from '../../api/models/GameGenre.model';
 import { GenreFormComponent } from "../../components/genre-form/genre-form.component";
+import { catchError, EMPTY, tap } from 'rxjs';
 
 @Component({
   selector: 'app-edit-genre-view',
@@ -23,14 +24,17 @@ export class EditGenreViewComponent implements OnInit {
 
       ngOnInit(): void {
         this.route.params.subscribe((params) => {
-          this.appService.getGenreById(params['id']).subscribe({
-            next: (category: GameGenre) => {
-              this.genre = category;
-            },
-            error: (error) => {
-              this.message = error.error.message;
-            },
-          });
+          this.appService.getGenreById(params['id'])
+            .pipe(
+                catchError((error) => {
+                    this.message = error.statusText;
+                    return EMPTY;
+                }),
+                tap((category: GameGenre) => {
+                    this.genre = category;
+                })
+            )
+          .subscribe();
         });
       }
 
@@ -39,13 +43,16 @@ export class EditGenreViewComponent implements OnInit {
         if (this.genre === undefined) {
           return;
         }
-        this.appService.updateGenre(this.genre).subscribe({
-          next: (category: GameGenre) => {
-            this.router.navigate(['/categories', category.id]);
-          },
-          error: (error) => {
-            this.message = error.error.message;
-          },
-        });
+        this.appService.updateGenre(this.genre)
+            .pipe(
+                catchError((error) => {
+                    this.message = error.statusText;
+                    return EMPTY;
+                }),
+                tap((category: GameGenre) => {
+                    this.router.navigate(['/categories', category.id]);
+                })
+            )
+        .subscribe();
       }
 }

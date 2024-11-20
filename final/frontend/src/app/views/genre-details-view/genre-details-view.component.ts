@@ -3,6 +3,7 @@ import { Game } from '../../api/models/Game.model';
 import { GameGenre } from '../../api/models/GameGenre.model';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AppService } from '../../api/AppService';
+import { catchError, EMPTY, tap } from 'rxjs';
 
 @Component({
   selector: 'app-genre-details-view',
@@ -23,15 +24,18 @@ export class GenreDetailsViewComponent implements OnInit {
 
     ngOnInit(): void {
         this.route.params.subscribe((params) => {
-            this.appService.getGenreById(params['id']).subscribe({
-                next: (genre) => {
+            this.appService.getGenreById(params['id'])
+            .pipe(
+                catchError((error) => {
+                    this.message = error.statusText;
+                    return EMPTY;
+                }),
+                tap((genre) => {
                     this.genre = genre;
                     this.fetchGames();
-                },
-                error: (error) => {
-                    this.message = error.error.message;
-                }
-            });
+                })
+            )
+            .subscribe();
         })
     }
 

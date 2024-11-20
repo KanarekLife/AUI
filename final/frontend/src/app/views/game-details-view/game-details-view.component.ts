@@ -3,6 +3,7 @@ import { AppService } from '../../api/AppService';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { GameGenre } from '../../api/models/GameGenre.model';
 import { Game } from '../../api/models/Game.model';
+import { catchError, EMPTY, forkJoin, tap } from 'rxjs';
 
 @Component({
   selector: 'app-game-details-view',
@@ -23,22 +24,28 @@ export class GameDetailsViewComponent implements OnInit {
 
     ngOnInit(): void {
         this.route.params.subscribe((params) => {
-            this.appService.getGameById(params['gameId']).subscribe({
-                next: (game) => {
-                    this.game = game;
-                },
-                error: (error) => {
-                    this.message = error.error.message;
-                },
-            });
-            this.appService.getGenreById(params['id']).subscribe({
-                next: (genre) => {
-                    this.genre = genre;
-                },
-                error: (error) => {
-                    this.message = error.error.message;
-                },
-            });
+            this.appService.getGameById(params['gameId'])
+                .pipe(
+                    catchError(error => {
+                        this.message = `Game: ${error.statusText}`;
+                        return EMPTY;
+                    }),
+                    tap((game) => {
+                        this.game = game;
+                    })
+                )
+                .subscribe();
+            this.appService.getGenreById(params['id'])
+                .pipe(
+                    catchError(error => {
+                        this.message = `Genre: ${error.statusText}`;
+                        return EMPTY;
+                    }),
+                    tap((genre) => {
+                        this.genre = genre;
+                    })
+                )
+                .subscribe();
         });
     }
 }

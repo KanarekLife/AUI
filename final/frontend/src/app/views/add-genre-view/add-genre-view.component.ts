@@ -3,6 +3,7 @@ import { AppService } from '../../api/AppService';
 import { Router } from '@angular/router';
 import { GameGenre } from '../../api/models/GameGenre.model';
 import { GenreFormComponent } from "../../components/genre-form/genre-form.component";
+import { catchError, EMPTY, tap } from 'rxjs';
 
 @Component({
   selector: 'app-add-genre-view',
@@ -21,13 +22,16 @@ export class AddGenreViewComponent {
         if (!genre.name) {
             return;
         }
-        this.service.createGenre(genre).subscribe({
-            next: (genre: GameGenre) => {
-                this.router.navigate(['/genres', genre.id]);
-            },
-            error: (error) => {
-                this.message = error.error.message;
-            },
-        });
+        this.service.createGenre(genre)
+            .pipe(
+                catchError((error) => {
+                    this.message = error.statusText;
+                    return EMPTY;
+                }),
+                tap((genre: GameGenre) => {
+                    this.router.navigate(['/genres', genre.id]);
+                })
+            )
+        .subscribe();
     }
 }

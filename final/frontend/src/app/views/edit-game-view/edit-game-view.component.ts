@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Game } from '../../api/models/Game.model';
 import { GameGenre } from '../../api/models/GameGenre.model';
 import { GameFormComponent } from "../../components/game-form/game-form.component";
+import { catchError, EMPTY, tap } from 'rxjs';
 
 @Component({
   selector: 'app-edit-game-view',
@@ -25,41 +26,50 @@ export class EditGameViewComponent implements OnInit {
 
       ngOnInit(): void {
         this.route.params.subscribe((params) => {
-          this.appService.getGameById(params['gameId']).subscribe({
-            next: (product) => {
-              this.game = product;
-            },
-            error: (error) => {
-              this.message = error.error.message;
-            },
-          });
-          this.appService.getGenreById(params['id']).subscribe({
-            next: (category) => {
-              this.genre = category;
-            },
-            error: (error) => {
-              this.message = error.error.message;
-            },
-          });
+          this.appService.getGameById(params['gameId'])
+            .pipe(
+                catchError((error) => {
+                    this.message = error.statusText;
+                    return EMPTY;
+                }),
+                tap((product: Game) => {
+                    this.game = product;
+                })
+            )
+          .subscribe();
+          this.appService.getGenreById(params['id'])
+            .pipe(
+                catchError((error) => {
+                    this.message = error.statusText;
+                    return EMPTY;
+                }),
+                tap((category: GameGenre) => {
+                    this.genre = category;
+                })
+            )
+          .subscribe();
         });
       }
 
       onSubmit(): void {
         this.message = '';
         if (this.game) {
-          this.appService.updateGame(this.game).subscribe({
-            next: (product) => {
-              this.router.navigate([
-                '/genres',
-                this.genre?.id,
-                'games',
-                product.id,
-              ]);
-            },
-            error: (error) => {
-              this.message = error.error.message;
-            },
-          });
+          this.appService.updateGame(this.game)
+            .pipe(
+                catchError((error) => {
+                    this.message = error.statusText;
+                    return EMPTY;
+                }),
+                tap((product: Game) => {
+                    this.router.navigate([
+                        '/genres',
+                        this.genre?.id,
+                        'games',
+                        product.id,
+                    ]);
+                })
+            )
+          .subscribe();
         }
       }
 }
