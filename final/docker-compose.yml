@@ -4,11 +4,11 @@ services:
         ports:
             - 8080:80
         environment:
-            - API_URL=http://gateway:8080
+            - API_URL=http://gateway_nginx:8080
         depends_on:
-            - gateway
-    gateway:
-        build: ./gateway
+            - gateway_nginx
+    gateway_nginx:
+        build: ./gateway_nginx
         environment:
             - GATEWAY_GAMESAPI=http://gamesapi:8081
             - GATEWAY_GAMEGENRESAPI=http://gamegenresapi:8082
@@ -23,6 +23,8 @@ services:
             - SPRING_DATASOURCE_PASSWORD=${GAMESAPI_POSTGRES_PASSWORD}
             - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
             - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+        deploy:
+            replicas: 2
         depends_on:
             - gamesapi-db
     gamesapi-db:
@@ -42,6 +44,8 @@ services:
             - SPRING_DATASOURCE_PASSWORD=${GAMEGENRESAPI_POSTGRES_PASSWORD}
             - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
             - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+        deploy:
+            replicas: 2
         depends_on:
             - gamegenresapi-db
     gamegenresapi-db:

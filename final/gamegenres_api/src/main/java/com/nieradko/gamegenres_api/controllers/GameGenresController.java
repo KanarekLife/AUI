@@ -26,6 +26,8 @@ public class GameGenresController {
     public ResponseEntity<List<GameGenreResponse>> getAllGenres() {
         var genres = _service.findAll();
 
+        System.out.println("Returning genres");
+
         return new ResponseEntity<>(genres.stream().map(GameGenreResponse::from).toList(), HttpStatus.OK);
     }
 
